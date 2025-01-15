@@ -3,8 +3,8 @@ import { useState } from 'react'
 //Componente 'Button':
 const Button = ({handleClick, calification}) => <button onClick={handleClick}>{calification}</button>
 
-//Componente 'Statistic':
-const Statistic = ({name, value, extra}) => <p>{name} {value}{extra}</p>
+//Componente 'StatisticLine':
+const StatisticLine = ({text, value, extra}) => <p>{text} {value}{extra}</p>
 
 //Componente 'App':
 const App = () => {
@@ -26,22 +26,37 @@ const App = () => {
   const badScore = bad !== 0 ? (bad * -1) : bad
   const averageNumber = totalComments !== 0 ? (good + badScore) / totalComments : 0
   const positivesPercentageNumber = totalComments !== 0 ? good / totalComments * 100 : 0
+  
+  //Generación de posibles resultados:
+  const resultWithStatistics = 
+  <>
+    <h1>give feedback</h1>
+    <Button handleClick={() => setGood(good + 1)} calification={calificationGood}/>
+    <Button handleClick={() => setNeutral(neutral + 1)} calification={calificationNeutral}/>
+    <Button handleClick={() => setBad(bad + 1)} calification={calificationBad}/>
+    <h2>statistics</h2>
+    <StatisticLine text={calificationGood} value={good}/>
+    <StatisticLine text={calificationNeutral} value={neutral}/>
+    <StatisticLine text={calificationBad} value={bad}/>
+    <StatisticLine text={calificationAll} value={totalComments}/>
+    <StatisticLine text={average} value={averageNumber}/>
+    <StatisticLine text={positivesPercentage} value={positivesPercentageNumber} extra='%'/>
+  </>
 
-  return (
-    <>
-      <h1>give feedback</h1>
-      <Button handleClick={() => setGood(good + 1)} calification={calificationGood}/>
-      <Button handleClick={() => setNeutral(neutral + 1)} calification={calificationNeutral}/>
-      <Button handleClick={() => setBad(bad + 1)} calification={calificationBad}/>
-      <h2>statistics</h2>
-      <Statistic name={calificationGood} value={good}/>
-      <Statistic name={calificationNeutral} value={neutral}/>
-      <Statistic name={calificationBad} value={bad}/>
-      <Statistic name={calificationAll} value={totalComments}/>
-      <Statistic name={average} value={averageNumber}/>
-      <Statistic name={positivesPercentage} value={positivesPercentageNumber} extra='%'/>
-    </>
-  )
+  const resultWithoutStatistics = 
+  <>
+    <h1>give feedback</h1>
+    <Button handleClick={() => setGood(good + 1)} calification={calificationGood}/>
+    <Button handleClick={() => setNeutral(neutral + 1)} calification={calificationNeutral}/>
+    <Button handleClick={() => setBad(bad + 1)} calification={calificationBad}/>
+    <h2>statistics</h2>
+    <p>No feedback given</p>
+  </>    
+
+  //El componente inyectado será el que tiene las estadísticas o el que no según si hay comentarios o no, respectivamente:
+  const result = totalComments > 0 ? resultWithStatistics : resultWithoutStatistics;
+
+  return result
 }
 
 export default App
