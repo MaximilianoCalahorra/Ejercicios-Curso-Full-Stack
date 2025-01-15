@@ -4,7 +4,14 @@ import { useState } from 'react'
 const Button = ({handleClick, calification}) => <button onClick={handleClick}>{calification}</button>
 
 //Componente 'StatisticLine':
-const StatisticLine = ({text, value, extra}) => <p>{text} {value}{extra}</p>
+const StatisticLine = ({text, value, extra}) => {
+  return(
+    <>
+      <td>{text}</td>
+      <td>{value}{extra}</td>
+    </>
+  )
+}
 
 //Componente 'App':
 const App = () => {
@@ -35,12 +42,16 @@ const App = () => {
     <Button handleClick={() => setNeutral(neutral + 1)} calification={calificationNeutral}/>
     <Button handleClick={() => setBad(bad + 1)} calification={calificationBad}/>
     <h2>statistics</h2>
-    <StatisticLine text={calificationGood} value={good}/>
-    <StatisticLine text={calificationNeutral} value={neutral}/>
-    <StatisticLine text={calificationBad} value={bad}/>
-    <StatisticLine text={calificationAll} value={totalComments}/>
-    <StatisticLine text={average} value={averageNumber}/>
-    <StatisticLine text={positivesPercentage} value={positivesPercentageNumber} extra='%'/>
+    <table>
+      <tbody>
+        <tr><StatisticLine text={calificationGood} value={good}/></tr>
+        <tr><StatisticLine text={calificationNeutral} value={neutral}/></tr>
+        <tr><StatisticLine text={calificationBad} value={bad}/></tr>
+        <tr><StatisticLine text={calificationAll} value={totalComments}/></tr>
+        <tr><StatisticLine text={average} value={averageNumber}/></tr>
+        <tr><StatisticLine text={positivesPercentage} value={positivesPercentageNumber} extra='%'/></tr>
+      </tbody>
+    </table>
   </>
 
   const resultWithoutStatistics = 
