@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</button>
+const Button = ({ handleClick, text }) => <button onClick={handleClick}>{text}</button>;
 
 const App = () => {
   const anecdotes = [
@@ -12,16 +12,29 @@ const App = () => {
     'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
-  ]
+  ];
 
-  const [selected, setSelected] = useState(0)
+  //Estado para la anécdota seleccionada:
+  const [selected, setSelected] = useState(0);
+
+  //Estado para los votos (inicialmente todos en 0):
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0));
+
+  //Manejar el voto
+  const handleVote = () => {
+    const newVotes = [...votes]; //Hacemos una copia del array actual.
+    newVotes[selected] += 1; //Incrementamos el voto de la anécdota seleccionada.
+    setVotes(newVotes); //Actualizamos el estado con la copia modificada.
+  };
 
   return (
     <>
       <p>{anecdotes[selected]}</p>
-      <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text='next anecdote'/>
+      <p>has {votes[selected]} vote/s</p>
+      <Button handleClick={handleVote} text="vote" />
+      <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text="next anecdote"/>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
