@@ -20,19 +20,48 @@ const App = () => {
   //Estado para los votos (inicialmente todos en 0):
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0));
 
-  //Manejar el voto
+  //Manejar el voto:
   const handleVote = () => {
     const newVotes = [...votes]; //Hacemos una copia del array actual.
     newVotes[selected] += 1; //Incrementamos el voto de la anécdota seleccionada.
     setVotes(newVotes); //Actualizamos el estado con la copia modificada.
   };
 
+  //Anécdota con mayor cantidad de votos:
+  const anecdoteMaxVotes = () => {
+    //Suponemos que es la primera:
+    let anecdoteIndex = 0;
+    let maxVotes = votes[anecdoteIndex];
+
+    //Analizamos las demás:
+    for(let i = 1; i < votes.length; i++){
+      let amount = votes[i];
+      if(amount > maxVotes){
+        anecdoteIndex = i;
+        maxVotes = amount;
+      }
+    }
+
+    //Obtenemos la anécdota más votada:
+    const anecdote = anecdotes[anecdoteIndex];
+
+    //Retornamos la anécdota y la cantidad de votos:
+    return {anecdote, maxVotes};
+  }
+
+  //Llamamos a la función para obtener la anécdota más votada:
+  const {anecdote, maxVotes} = anecdoteMaxVotes();
+
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} vote/s</p>
       <Button handleClick={handleVote} text="vote" />
       <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text="next anecdote"/>
+      <h2>Anecdote with most votes</h2>
+      <p>{anecdote}</p>
+      <p>has {maxVotes} vote/s</p>
     </>
   );
 };
