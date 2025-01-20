@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 const Filter = ({value, handleOnChange}) => 
 <div>filter shown with<input value={value} onChange={handleOnChange}/></div>
@@ -26,9 +26,9 @@ const App = () => {
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data))
+    personService
+      .getAll()
+      .then(initialPersons => setPersons(initialPersons))
   }, [])
 
   const [newName, setNewName] = useState('')
@@ -56,10 +56,14 @@ const App = () => {
           name: newName,
           number: newNumber
         }
-      
-        setPersons(persons.concat(personObject))
-        setNewName('')
-        setNewNumber('')
+
+        personService
+          .create(personObject)
+          .then(returnedPerson => {
+              setPersons(persons.concat(returnedPerson))
+              setNewName('')
+              setNewNumber('')
+          })
     }
     else
     {
@@ -78,7 +82,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter value={searchedName} handleOnChange={handleSearchedNameChange}/>
       <h3>add a new</h3>
-      <FormPerson onSubmit={addPerson} newName={newName} handleNameOnChange={handleNameChange} newNumber={newNumber} handleNumberOnChange={handleNumberChange}/>
+      <FormPerson handleOnSubmit={addPerson} newName={newName} handleNameOnChange={handleNameChange} newNumber={newNumber} handleNumberOnChange={handleNumberChange}/>
       <h2>Numbers</h2>
       <Persons persons={personsToShow}/>
     </>
