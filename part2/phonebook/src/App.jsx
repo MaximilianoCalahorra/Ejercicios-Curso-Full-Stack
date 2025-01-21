@@ -18,22 +18,27 @@ const FormPerson = ({handleOnSubmit, newName, handleNameOnChange, newNumber, han
     )
 }
 
-const Person = ({person}) => <p>{person.name} {person.number}</p>
+const Person = ({person, remove}) => {
+  return(
+    <>
+      <p>{person.name} {person.number} <button onClick={remove}>delete</button></p>
+    </>
+  )
+}
 
-const Persons = ({persons}) => <>{persons.map(person => <Person key={person.name} person={person}/>)}</>
+const Persons = ({persons, remove}) => <>{persons.map(person => <Person key={person.id} person={person} remove={() => remove(person.id)}/>)}</>
 
 const App = () => {
   const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [searchedName, setSearchedName] = useState('')
 
   useEffect(() => {
     personService
       .getAll()
       .then(initialPersons => setPersons(initialPersons))
   }, [])
-
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
-  const [searchedName, setSearchedName] = useState('')
 
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNumberChange = (event) => setNewNumber(event.target.value)
@@ -71,6 +76,21 @@ const App = () => {
     }
   }
 
+  const removePerson = id => {
+    const person = persons.find(p => p.id === id)
+  
+    if(window.confirm(`Delete ${person.name}?`))
+    {
+        personService
+          .remove(id)
+          .then(setPersons(persons.filter(p => p.id !== id)))
+          .catch(error => {
+            alert(`the person '${person.name}' was already deleted from server`)
+            setPersons(persons.filter(p => p.id !== id))
+          })
+    }
+  }
+
   const personsToShow = searchedName === '' ? 
                         persons : 
                         persons.filter(person => {
@@ -84,7 +104,7 @@ const App = () => {
       <h3>add a new</h3>
       <FormPerson handleOnSubmit={addPerson} newName={newName} handleNameOnChange={handleNameChange} newNumber={newNumber} handleNumberOnChange={handleNumberChange}/>
       <h2>Numbers</h2>
-      <Persons persons={personsToShow}/>
+      <Persons persons={personsToShow} remove={removePerson}/>
     </>
   )
 }
