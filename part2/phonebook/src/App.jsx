@@ -55,7 +55,34 @@ const App = () => {
         i++
     }
 
-    if(!isPresent)
+    //Si el contacto ya existe:
+    if(isPresent)
+    {
+        //Preguntamos si quiere reemplazar el número:
+        if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`))
+        {
+            //Obtenemos la persona a modificar:
+            const person = persons[i - 1];
+
+            //Definimos los nuevos datos de la persona:
+            const personObject = {
+                name: person.name,
+                number: newNumber
+            }
+
+            //La actualizamos en el JSON y en el array:
+            personService
+              .update(person.id, personObject)
+              .then(updatedPerson => {
+                  let newPersons = persons
+                  newPersons[i - 1] = updatedPerson
+                  setPersons(newPersons)
+                  setNewName('')
+                  setNewNumber('')
+              })
+        }
+    }
+    else
     {
         const personObject = {
           name: newName,
@@ -69,10 +96,6 @@ const App = () => {
               setNewName('')
               setNewNumber('')
           })
-    }
-    else
-    {
-        alert(`${newName} is already added to phonebook`)
     }
   }
 
