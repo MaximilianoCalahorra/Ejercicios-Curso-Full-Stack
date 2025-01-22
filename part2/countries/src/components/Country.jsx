@@ -1,5 +1,5 @@
 //Componente que solo imprime el nombre del país:
-const CountryName = ({country}) => <div>{country.name.common}</div>
+const CountryName = ({country}) => <>{country.name.common}</>
 
 //Componente que imprime nombre, capital, área, idiomas y bandera del país:
 const FullCountry = ({country}) => {
@@ -20,7 +20,7 @@ const FullCountry = ({country}) => {
 }
 
 //Componente donde se determina qué hacer según la cantidad de países que llegan:
-const Countries = ({countries}) => {
+const Countries = ({countries, handleShow}) => {
     //Obtenemos la cantidad que son:
     const amountOfCountries = countries.length
 
@@ -32,8 +32,15 @@ const Countries = ({countries}) => {
     //Si son entre [1;10]:
     else if(amountOfCountries >= 1 && amountOfCountries <= 10)
     {
-        //Imprimimos el nombre de cada uno:
-        return countries.map(country => <CountryName key={country.name.common} country={country}/>)
+        //Imprimimos el nombre de cada uno junto a un botón para mostrar más detalles del país:
+        return countries.map(country => {
+            return(
+                <div key={country.name.common}>
+                    <CountryName country={country}/>
+                    <button onClick={() => handleShow(country.name.common)}>show</button>
+                </div>
+            )
+        })
     }
     //Otros casos:
     else

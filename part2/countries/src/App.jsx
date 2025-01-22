@@ -8,14 +8,14 @@ const App = () => {
     const [searchedName, setSearchedName] = useState('')
     const [countries, setCountries] = useState([])
 
+    const handleSearchedNameChange = event => setSearchedName(event.target.value)
+
     //Obtenemos todos los países la primera vez:
     useEffect(() => {
         countryService
             .getAll()
             .then(initialCountries => setCountries(initialCountries))
     }, [])
-
-    const handleSearchedNameChange = event => setSearchedName(event.target.value)
 
     const countriesToShow = searchedName === '' ?
                             countries :
@@ -26,7 +26,7 @@ const App = () => {
     return(
         <>
             <Filter value={searchedName} handleOnChange={handleSearchedNameChange}/>
-            <Countries countries={countriesToShow}/>
+            <Countries countries={countriesToShow} handleShow={setSearchedName}/>
         </>
     )
 }
