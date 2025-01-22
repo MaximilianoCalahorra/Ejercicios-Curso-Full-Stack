@@ -1,38 +1,17 @@
 import { useState, useEffect } from 'react'
+import Notification from './components/Notification'
+import Filter from './components/Filter'
+import FormPerson from './components/FormPerson'
+import Persons from './components/Person'
 import personService from './services/persons'
-
-const Filter = ({value, handleOnChange}) => 
-<div>filter shown with<input value={value} onChange={handleOnChange}/></div>
-
-const FormPerson = ({handleOnSubmit, newName, handleNameOnChange, newNumber, handleNumberOnChange}) => {
-    return(
-        <>
-          <form onSubmit={handleOnSubmit}>
-            <div>name: <input value={newName} onChange={handleNameOnChange}/></div>
-            <div>number: <input value={newNumber} onChange={handleNumberOnChange}/></div>
-            <div>
-              <button type="submit">add</button>
-            </div>
-          </form>
-        </>
-    )
-}
-
-const Person = ({person, remove}) => {
-  return(
-    <>
-      <p>{person.name} {person.number} <button onClick={remove}>delete</button></p>
-    </>
-  )
-}
-
-const Persons = ({persons, remove}) => <>{persons.map(person => <Person key={person.id} person={person} remove={() => remove(person.id)}/>)}</>
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchedName, setSearchedName] = useState('')
+  const [resultMessage, setResultMessage] = useState(null)
+  const [className, setClassName] = useState(null)
 
   useEffect(() => {
     personService
@@ -79,6 +58,14 @@ const App = () => {
                   setPersons(newPersons)
                   setNewName('')
                   setNewNumber('')
+                  setClassName('success')
+                  setResultMessage(
+                    `Modified ${person.name}`
+                  )
+                  setTimeout(() => {
+                    setClassName(null)
+                    setResultMessage(null)
+                  }, 5000)
               })
         }
     }
@@ -95,6 +82,14 @@ const App = () => {
               setPersons(persons.concat(returnedPerson))
               setNewName('')
               setNewNumber('')
+              setClassName('success')
+              setResultMessage(
+                `Added ${newName}`
+              )
+              setTimeout(() => {
+                setClassName(null)
+                setResultMessage(null)
+              }, 5000)
           })
     }
   }
@@ -108,8 +103,13 @@ const App = () => {
           .remove(id)
           .then(setPersons(persons.filter(p => p.id !== id)))
           .catch(error => {
-            alert(`the person '${person.name}' was already deleted from server`)
-            setPersons(persons.filter(p => p.id !== id))
+              setClassName('error')
+              setResultMessage(`Information of '${person.name}' has already been removed from server`)
+              setTimeout(() => {
+                setClassName(null)
+                setResultMessage(null)
+              }, 5000)
+              setPersons(persons.filter(p => p.id !== id))
           })
     }
   }
@@ -123,6 +123,7 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={resultMessage} className={className}/>
       <Filter value={searchedName} handleOnChange={handleSearchedNameChange}/>
       <h3>add a new</h3>
       <FormPerson handleOnSubmit={addPerson} newName={newName} handleNameOnChange={handleNameChange} newNumber={newNumber} handleNumberOnChange={handleNumberChange}/>
