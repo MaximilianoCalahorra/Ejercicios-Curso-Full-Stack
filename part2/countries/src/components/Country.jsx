@@ -1,8 +1,25 @@
+import { useState } from 'react'
+import countryService from '../services/countries'
+
 //Componente que solo imprime el nombre del país:
 const CountryName = ({country}) => <>{country.name.common}</>
 
-//Componente que imprime nombre, capital, área, idiomas y bandera del país:
+//Componente que imprime nombre, capital, área, idiomas, bandera del país y estado actual del tiempo de la capital:
 const FullCountry = ({country}) => {
+    const [temperature, setTemperature] = useState('');
+    const [windSpeed, setWindSpeed] = useState('');
+    const [icon, setIcon] = useState('');
+
+    countryService
+        .getCityWeatherStatus(country.capital[0], country.cca2)
+        .then(weatherStatus => {
+            setTemperature((weatherStatus.main.temp - 273.15).toFixed(1))
+            setWindSpeed(weatherStatus.wind.speed)
+            setIcon(weatherStatus.weather[0].icon)
+        })
+
+    const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`
+
     return(
         <>
             <h1>{country.name.common}</h1>
@@ -15,6 +32,10 @@ const FullCountry = ({country}) => {
                 ))}
             </ul>
             <img src={country.flags.png} alt={country.flags.alt}></img>
+            <h2>Weather in {country.capital}</h2>
+            <div>tempetature {temperature} Celcius</div>
+            <img src={iconUrl}></img>
+            <div>wind {windSpeed} m/s</div>
         </>
     )
 }
