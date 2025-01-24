@@ -1,11 +1,17 @@
 //Obtenemos el servidor:
 const express = require('express')
 
+//Importamos Morgan:
+const morgan = require('morgan')
+
 //Lo ponemos en funcionamiento:
 const app = express()
 
+//Configuramos Morgan con el formato 'tiny':
+app.use(morgan('tiny'))
+
 //Activamos el parseador a JSON de Express:
-app.use(express.json());
+app.use(express.json())
 
 //Datos de las personas:
 let persons =
