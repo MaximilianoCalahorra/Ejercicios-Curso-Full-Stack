@@ -4,6 +4,9 @@ const express = require('express')
 //Lo ponemos en funcionamiento:
 const app = express()
 
+//Activamos el parseador a JSON de Express:
+app.use(express.json());
+
 //Datos de las personas:
 let persons =
 [
@@ -63,6 +66,24 @@ app.delete('/api/persons/:id', (request, response) => {
     persons = persons.filter(person => person.id !== id)
 
     response.status(204).end()
+})
+
+//Generar id aleatorio:
+const generateRandomId = () => Math.round(Math.random() * 1000000)
+
+//Agregar una persona:
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    const newPerson = 
+    {
+        id: generateRandomId(),
+        name: body.name,
+        number: body.number
+    }
+
+    persons = persons.concat(newPerson)
+
+    response.json(newPerson)
 })
 
 const PORT = 3001
