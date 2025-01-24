@@ -7,11 +7,14 @@ const morgan = require('morgan')
 //Lo ponemos en funcionamiento:
 const app = express()
 
-//Configuramos Morgan con el formato 'tiny':
-app.use(morgan('tiny'))
-
 //Activamos el parseador a JSON de Express:
 app.use(express.json())
+
+//Definimos la configuración de formato de Morgan:
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+//Agregar el cuerpo al registro:
+morgan.token('body', (req) => JSON.stringify(req.body))
 
 //Datos de las personas:
 let persons =
