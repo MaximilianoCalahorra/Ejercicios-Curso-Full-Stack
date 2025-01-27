@@ -22,6 +22,9 @@ morgan.token('body', (req) => JSON.stringify(req.body))
 //Usamos CORS:
 app.use(cors())
 
+//Para servir archivos estáticos:
+app.use(express.static('dist'))
+
 //Datos de las personas:
 let persons =
 [
