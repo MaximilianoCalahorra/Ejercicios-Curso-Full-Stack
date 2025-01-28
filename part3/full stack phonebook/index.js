@@ -7,6 +7,12 @@ const morgan = require('morgan')
 //Obtenemos CORS:
 const cors = require('cors')
 
+//Importamos las variables de entorno:
+require('dotenv').config()
+
+//Importamos la entidad:
+const Person = require('./models/person')
+
 //Lo ponemos en funcionamiento:
 const app = express()
 
@@ -25,34 +31,11 @@ app.use(cors())
 //Para servir archivos estáticos:
 app.use(express.static('dist'))
 
-//Datos de las personas:
-let persons =
-[
-    { 
-        "id": 1,
-        "name": "Arto Hellas", 
-        "number": "040-123456"
-    },
-    { 
-        "id": 2,
-        "name": "Ada Lovelace", 
-        "number": "39-44-5323523"
-    },
-    { 
-        "id": 3,
-        "name": "Dan Abramov", 
-        "number": "12-43-234345"
-    },
-    { 
-        "id": 4,
-        "name": "Mary Poppendieck", 
-        "number": "39-23-6423122"
-    }
-]
-
 //Obtener personas:
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 //Mostrar información:
@@ -65,17 +48,17 @@ app.get('/info', (request, response) => {
 
 //Obtener una persona por id:
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if(person)
-    {
-        response.json(person)
-    }
-    else
-    {
-        response.status(404).send(`There isn't a person with id ${id}`)
-    }
+    const id = request.params.id
+    Person.findById(id).then(person => {
+        if(person)
+        {
+            response.json(person)
+        }
+        else
+        {
+            response.status(404).send(`There isn't a person with id ${id}`)
+        }
+    })
 })
 
 //Eliminar una persona por su id:
@@ -85,9 +68,6 @@ app.delete('/api/persons/:id', (request, response) => {
 
     response.status(204).end()
 })
-
-//Generar id aleatorio:
-const generateRandomId = () => Math.round(Math.random() * 1000000)
 
 //Agregar una persona:
 app.post('/api/persons', (request, response) => {
