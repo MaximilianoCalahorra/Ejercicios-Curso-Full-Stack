@@ -40,10 +40,13 @@ app.get('/api/persons', (request, response) => {
 
 //Mostrar información:
 app.get('/info', (request, response) => {
-    const currentDate = new Date()
-    const html = `<p>Phonebook has info for ${persons.length} people</p>
-                  <p>${currentDate.toString()}</p>`
-    response.send(html)
+    Person.find({})
+        .then(persons => {
+            const currentDate = new Date()
+            const html = `<p>Phonebook has info for ${persons.length} people</p>
+                          <p>${currentDate.toString()}</p>`
+            response.send(html)
+        })
 })
 
 //Obtener una persona por id:
