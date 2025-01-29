@@ -47,27 +47,29 @@ app.get('/info', (request, response) => {
 })
 
 //Obtener una persona por id:
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
-    Person.findById(id).then(person => {
-        if(person)
-        {
-            response.json(person)
-        }
-        else
-        {
-            response.status(404).send(`There isn't a person with id ${id}`)
-        }
-    })
+    Person.findById(id)
+        .then(person => {
+            if(person)
+            {
+                response.json(person)
+            }
+            else
+            {
+                response.status(404).send(`There isn't a person with id ${id}`)
+            }
+        })
+        .catch(error => next(error))
 })
 
 //Eliminar una persona por su id:
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndDelete(request.params.id)
         .then(result => {
             response.status(204).end()
         })
-        .catch(error => response.status(400).send({ error: 'malformatted id' }))
+        .catch(error => next(error))
 })
 
 //Agregar una persona:
@@ -97,6 +99,22 @@ app.post('/api/persons', (request, response) => {
         response.json(savedPerson)
     })
 })
+
+//Manejador de errores:
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    //Si es un error de casteo:
+    if(error.name === 'CastError') 
+    {
+        return response.status(400).send({ error: 'malformatted id' })
+    } 
+
+    next(error)
+}
+
+//Ponemos en funcionamiento el manejador de errores:
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
