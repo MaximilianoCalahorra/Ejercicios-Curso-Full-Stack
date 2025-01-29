@@ -19,7 +19,11 @@ mongoose.connect(url)
 
 //Definimos el esquema de una persona:
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        minLength: 3,
+        required: true
+    },
     number: String
 })
 
