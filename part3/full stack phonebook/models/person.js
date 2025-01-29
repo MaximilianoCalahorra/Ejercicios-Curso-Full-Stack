@@ -24,7 +24,17 @@ const personSchema = new mongoose.Schema({
         minLength: 3,
         required: true
     },
-    number: String
+    number: {
+        type: String,
+        minLength: 8,
+        validate: {
+            validator: function (value) {
+                return /^\d{2,3}-\d+$/.test(value)
+            },
+            message: props => `${props.value} is not a valid phone number! Format should be XX-XXXXXXX or XXX-XXXXXXXX`
+        },
+        required: true
+    }
 })
 
 //Indicamos el formato esperado cuando se convierte a JSON una persona:
