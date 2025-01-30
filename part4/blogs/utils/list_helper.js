@@ -1,3 +1,6 @@
+//Importamos Lodash:
+const _ = require('lodash')
+
 const dummy = (blogs) => {
   return 1
 }
@@ -15,8 +18,16 @@ const favoriteBlog = blogs => {
   }
 }
 
+const mostBlogs = blogs => {
+  const grouped = _.countBy(blogs, 'author') //Cuenta blogs por autor.
+  const maxAuthor = _.maxBy(Object.keys(grouped), (author) => grouped[author]) //Autor con más blogs.
+
+  return { author: maxAuthor, blogs: grouped[maxAuthor] }
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
