@@ -130,6 +130,23 @@ test('a blog with inexisting id cannot be deleted', async () => {
   assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
 })
 
+test('a blog can be updated', async () => {
+  const blogs = await helper.blogsInDb()
+  const firstBlog = blogs[0]
+
+  const updatedPost = {
+    ...firstBlog,
+    likes: 15
+  }
+
+  const response = await api
+    .put(`/api/blogs/${firstBlog.id}`)
+    .send(updatedPost)
+    .expect('Content-Type', /application\/json/)
+
+  assert.deepStrictEqual(response.body, updatedPost)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
