@@ -80,7 +80,7 @@ test('a blog without likes can be added', async () => {
   assert.strictEqual(addedBlog[0].likes, 0)
 })
 
-test.only('invalids blog cannot be added', async () => {
+test('invalids blog cannot be added', async () => {
   const newBlogWithoutTitle = {
     author: 'Invalid unknown',
     url: 'Invalid url'
@@ -103,6 +103,31 @@ test.only('invalids blog cannot be added', async () => {
 
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
+test('a blog can be deleted', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const id = blogsAtStart[0].id
+
+  await api
+    .delete(`/api/blogs/${id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+})
+
+test('a blog with inexisting id cannot be deleted', async () => {
+  const id = '5a422b3a1b54a676234d17f0'
+
+  const blogsAtStart = await helper.blogsInDb()
+
+  await api
+    .delete(`/api/blogs/${id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
 })
 
 after(async () => {
