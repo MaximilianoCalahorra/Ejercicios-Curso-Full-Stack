@@ -80,6 +80,31 @@ test('a blog without likes can be added', async () => {
   assert.strictEqual(addedBlog[0].likes, 0)
 })
 
+test.only('invalids blog cannot be added', async () => {
+  const newBlogWithoutTitle = {
+    author: 'Invalid unknown',
+    url: 'Invalid url'
+  }
+
+  const newBlogWithoutUrl = {
+    title: 'Invalid blog',
+    author: 'Invalid unknown'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutTitle)
+    .expect(400)
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutUrl)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
