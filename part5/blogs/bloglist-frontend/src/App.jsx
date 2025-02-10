@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
+import LoggedUser from './components/LoggedUser'
+import CreateBlogForm from './components/CreateBlogForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -12,6 +15,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState(null)
+  const [typeMessage, setTypeMessage] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -48,7 +53,12 @@ const App = () => {
     } 
     catch(exception) 
     {
-      console.log('Wrong credentials')
+      setMessage('Wrong username or password')
+      setTypeMessage('error')
+      setTimeout(() => {
+        setMessage(null)
+        setTypeMessage('')
+      }, 5000)
     }
   }
 
@@ -73,17 +83,37 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      setMessage(`a new blog ${addedBlog.title} by ${addedBlog.author} added`)
+      setTypeMessage('success')
+
+      setTimeout(() => {
+        setMessage(null)
+        setTypeMessage('')
+      }, 5000)
     }
   }
 
   if(user === null)
   {
-    return <LoginForm username={username} password={password} handleLogin={handleLogin} 
-                      setUsername={setUsername} setPassword={setPassword}/>
+    return(
+      <>
+        <Notification message={message} type={typeMessage}/>
+        <LoginForm username={username} password={password} handleLogin={handleLogin} setUsername={setUsername} 
+                  setPassword={setPassword}/>
+      </>
+    ) 
   }
 
-  return <Blogs blogs={blogs} user={user} handleLogout={handleLogout} handleCreateBlog={addBlog} title={title}
-                setTitle={setTitle} author={author} setAuthor={setAuthor} url={url} setUrl={setUrl}/>
+  return(
+    <>
+      <h2>blogs</h2>
+      <Notification message={message} type={typeMessage}/>
+      <LoggedUser user={user} handleLogout={handleLogout}/>
+      <CreateBlogForm handleCreateBlog={addBlog} title={title} setTitle={setTitle} author={author} setAuthor={setAuthor} 
+                      url={url} setUrl={setUrl}/>
+      <Blogs blogs={blogs} user={user} handleLogout={handleLogout}/>
+    </>
+  ) 
 }
 
 export default App
