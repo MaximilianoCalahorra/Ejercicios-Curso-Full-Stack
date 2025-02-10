@@ -9,6 +9,9 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -54,13 +57,33 @@ const App = () => {
     setUser(null)
   }
 
+  const addBlog = async (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title,
+      author,
+      url
+    }
+
+    const addedBlog = await blogService.create(blogObject)
+
+    if(addedBlog)
+    {
+      setBlogs(blogs.concat(addedBlog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    }
+  }
+
   if(user === null)
   {
     return <LoginForm username={username} password={password} handleLogin={handleLogin} 
                       setUsername={setUsername} setPassword={setPassword}/>
   }
 
-  return <Blogs blogs={blogs} user={user} handleLogout={handleLogout}/>
+  return <Blogs blogs={blogs} user={user} handleLogout={handleLogout} handleCreateBlog={addBlog} title={title}
+                setTitle={setTitle} author={author} setAuthor={setAuthor} url={url} setUrl={setUrl}/>
 }
 
 export default App
