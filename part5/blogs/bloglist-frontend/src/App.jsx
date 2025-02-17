@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm'
 import LoggedUser from './components/LoggedUser'
 import CreateBlogForm from './components/CreateBlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -109,8 +110,10 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={message} type={typeMessage}/>
       <LoggedUser user={user} handleLogout={handleLogout}/>
-      <CreateBlogForm handleCreateBlog={addBlog} title={title} setTitle={setTitle} author={author} setAuthor={setAuthor} 
-                      url={url} setUrl={setUrl}/>
+      <Togglable buttonLabel={'new blog'}>
+        <CreateBlogForm handleCreateBlog={addBlog} title={title} setTitle={setTitle} author={author} setAuthor={setAuthor} 
+                        url={url} setUrl={setUrl}/>
+      </Togglable>
       <Blogs blogs={blogs} user={user} handleLogout={handleLogout}/>
     </>
   ) 
