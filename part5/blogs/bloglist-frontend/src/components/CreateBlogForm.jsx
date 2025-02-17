@@ -1,8 +1,37 @@
-const CreateBlogForm = ({handleCreateBlog, title, setTitle, author, setAuthor, url, setUrl}) => {
+import { useState } from 'react'
+
+const CreateBlogForm = ({createBlog, setMessage, setTypeMessage}) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const addBlog = async (event) => {
+    event.preventDefault()
+    const addedBlog = createBlog({
+      title,
+      author,
+      url
+    })
+
+    if(addedBlog)
+    {
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setMessage(`a new blog ${addedBlog.title} by ${addedBlog.author} added`)
+      setTypeMessage('success')
+
+      setTimeout(() => {
+        setMessage(null)
+        setTypeMessage('')
+      }, 5000)
+    }
+  }
+
   return(
     <>
       <h2>create new</h2>
-      <form onSubmit={handleCreateBlog}>
+      <form onSubmit={addBlog}>
           <div>
               title
               <input

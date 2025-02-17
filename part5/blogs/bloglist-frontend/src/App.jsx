@@ -13,9 +13,6 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [typeMessage, setTypeMessage] = useState('')
 
@@ -70,31 +67,10 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title,
-      author,
-      url
-    }
-
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    const addedBlog = await blogService.create(blogObject)
-
-    if(addedBlog)
-    {
-      setBlogs(blogs.concat(addedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setMessage(`a new blog ${addedBlog.title} by ${addedBlog.author} added`)
-      setTypeMessage('success')
-
-      setTimeout(() => {
-        setMessage(null)
-        setTypeMessage('')
-      }, 5000)
-    }
+    const returnedBlog = await blogService.create(blogObject)
+    setBlogs(blogs.concat(returnedBlog))
   }
 
   if(user === null)
@@ -114,8 +90,7 @@ const App = () => {
       <Notification message={message} type={typeMessage}/>
       <LoggedUser user={user} handleLogout={handleLogout}/>
       <Togglable buttonLabel={'new blog'} ref={blogFormRef}>
-        <CreateBlogForm handleCreateBlog={addBlog} title={title} setTitle={setTitle} author={author} setAuthor={setAuthor} 
-                        url={url} setUrl={setUrl}/>
+        <CreateBlogForm createBlog={addBlog} setMessage={setMessage} setTypeMessage={setTypeMessage}/>
       </Togglable>
       <Blogs blogs={blogs} user={user} handleLogout={handleLogout}/>
     </>
