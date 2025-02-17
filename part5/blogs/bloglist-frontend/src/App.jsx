@@ -91,7 +91,7 @@ const App = () => {
       <Notification message={message} type={typeMessage}/>
       <LoggedUser user={user} handleLogout={handleLogout}/>
       <Togglable buttonLabel={'new blog'} ref={blogFormRef}>
-        <CreateBlogForm createBlog={addBlog} setMessage={setMessage} setTypeMessage={setTypeMessage}/>
+        <CreateBlogForm createBlog={addBlog} setMessage={setMessage} setTypeMessage={setTypeMessage} user={user}/>
       </Togglable>
       <Blogs blogs={blogs}/>
     </>
