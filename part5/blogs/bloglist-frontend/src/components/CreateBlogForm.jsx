@@ -7,7 +7,7 @@ const CreateBlogForm = ({createBlog, setMessage, setTypeMessage}) => {
 
   const addBlog = async (event) => {
     event.preventDefault()
-    const addedBlog = createBlog({
+    const addedBlog = await createBlog({
       title,
       author,
       url

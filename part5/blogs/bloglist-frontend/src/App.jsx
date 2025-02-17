@@ -71,6 +71,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     const returnedBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(returnedBlog))
+    return returnedBlog
   }
 
   if(user === null)
