@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, user, removeBlog }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -16,6 +16,13 @@ const Blog = ({ blog }) => {
   const addLike = async () => {
     const updatedBlog = await blogService.addLike(blog)
     setLikes(updatedBlog.likes)
+  }
+
+  const remove = async () => {
+    if(window.confirm(`Remove blog ${blog.title} by ${blog.author}`))
+    {
+      await removeBlog(blog.id)
+    }
   }
 
   const blogStyle = {
@@ -36,6 +43,7 @@ const Blog = ({ blog }) => {
         <div>{blog.url}</div>
         <div>likes {likes} <button onClick={addLike}>like</button></div>
         <div>{blog.user.name}</div>
+        {user.username === blog.user.username && <button onClick={remove}>remove</button>}
       </div>
     </div>
   )

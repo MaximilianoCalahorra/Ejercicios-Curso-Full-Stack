@@ -74,6 +74,11 @@ const App = () => {
     return returnedBlog
   }
 
+  const removeBlog = async id => {
+    await blogService.remove(id)
+    setBlogs(blogs.filter(b => b.id !== id))
+  }
+
   if(user === null)
   {
     return(
@@ -93,7 +98,7 @@ const App = () => {
       <Togglable buttonLabel={'new blog'} ref={blogFormRef}>
         <CreateBlogForm createBlog={addBlog} setMessage={setMessage} setTypeMessage={setTypeMessage} user={user}/>
       </Togglable>
-      <Blogs blogs={blogs}/>
+      <Blogs blogs={blogs} user={user} removeBlog={removeBlog}/>
     </>
   ) 
 }
