@@ -10,8 +10,8 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [typeMessage, setTypeMessage] = useState('')
@@ -19,12 +19,12 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if(loggedUserJSON) 
+    if(loggedUserJSON)
     {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -36,22 +36,22 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
-    try 
+
+    try
     {
-      const user = await loginService.login({username, password})
-      
+      const user = await loginService.login( { username, password } )
+
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
 
       blogService.setToken(user.token)
-      
+
       setUser(user)
       setUsername('')
       setPassword('')
-    } 
-    catch(exception) 
+    }
+    catch(exception)
     {
       setMessage('Wrong username or password')
       setTypeMessage('error')
@@ -84,10 +84,9 @@ const App = () => {
     return(
       <>
         <Notification message={message} type={typeMessage}/>
-        <LoginForm username={username} password={password} handleLogin={handleLogin} setUsername={setUsername} 
-                  setPassword={setPassword}/>
+        <LoginForm username={username} password={password} handleLogin={handleLogin} setUsername={setUsername} setPassword={setPassword}/>
       </>
-    ) 
+    )
   }
 
   return(
@@ -100,7 +99,7 @@ const App = () => {
       </Togglable>
       <Blogs blogs={blogs} user={user} removeBlog={removeBlog}/>
     </>
-  ) 
+  )
 }
 
 export default App
