@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import Blog from './Blog'
 import { test, expect, vi } from 'vitest'
+import Blog from './Blog'
+import blogService from '../services/blogs'  // Importa el servicio
 
 test('blog preview', () => {
   const user = {
@@ -61,5 +62,43 @@ test('show URL and likes after do click in "view" button', async () => {
   //Verifica que ahora sí son visibles:
   expect(urlElement).toBeVisible()
   expect(likesElement).toBeVisible()
+})
+
+test('clicking the button calls event handler twice', async () => {
+  const userOfBlog = {
+    name: 'Jane Doe',
+    username: 'janedoe'
+  }
+
+  const blog = {
+    title: 'Testing React Components',
+    author: 'John Doe',
+    url: 'https://example.com/blog',
+    likes: 10,
+    user: userOfBlog
+  }
+
+  const user = userEvent.setup()
+  const mockRemove = vi.fn()
+
+  //Espía la función `addLike` en `blogService`:
+  const mockAddLike = vi.spyOn(blogService, 'addLike').mockResolvedValue({
+    ...blog,
+    likes: blog.likes + 1
+  })
+
+  //Renderiza el componente:
+  render(<Blog blog={blog} user={userOfBlog} removeBlog={mockRemove} />)
+
+  //Clic en el botón "like" dos veces:
+  const button = screen.getByText('like')
+  await user.click(button)
+  await user.click(button)
+
+  //Verifica que `blogService.addLike` se llamó dos veces:
+  expect(mockAddLike).toHaveBeenCalledTimes(2)
+
+  //Restaura la función original:
+  mockAddLike.mockRestore()
 })
 
